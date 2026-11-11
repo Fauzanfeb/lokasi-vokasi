@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f7f2">
+    <meta name="description" content="Cari titik colokan di lingkungan Vokasi Universitas Indonesia. Lihat detail lokasi, status, dan kirim laporan.">
+    <title>LOKASI — Temukan colokan di Vokasi UI</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='13' fill='%231f493c'/%3E%3Cpath d='M14 9v9m12-9v9m-17 0h22v3a11 11 0 0 1-10 11v5h-4v-5A11 11 0 0 1 9 21z' fill='none' stroke='%23d1f269' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="LOKASI beranda">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none">
+            <path d="M14 9v9m12-9v9M9 18h22v3a11 11 0 0 1-10 11v5h-4v-5A11 11 0 0 1 9 21v-3Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="brand-name">LOKASI<span class="brand-period">.</span><small>COLOKAN VOKASI</small></span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Navigasi utama">
+        <a class="nav-link is-active" href="#jelajahi">Jelajahi</a>
+        <a class="nav-link" href="#cara-kerja">Cara kerja</a>
+        <button class="nav-link nav-button" type="button" data-action="open-admin">Admin</button>
+      </nav>
+
+      <a class="button button-dark header-report" href="#jelajahi" data-action="open-report">Laporkan titik <span aria-hidden="true">↗</span></a>
+      <button class="mobile-menu-button" type="button" aria-label="Buka navigasi" aria-expanded="false" data-action="toggle-menu">
+        <span></span><span></span>
+      </button>
+    </header>
+
+    <main>
+      <p class="backend-notice" id="backend-notice" role="status" hidden></p>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow hero-eyebrow"><span class="live-dot"></span> DIREKTORI FASILITAS VOKASI UI</div>
+          <h1 id="hero-title">Nggak perlu<br>keliling buat<br>cari <span>colokan.</span></h1>
+          <p>Temukan titik colokan di Vokasi UI, lengkap dengan lokasi dan status terakhir yang diverifikasi. Biar waktumu dipakai buat hal yang lebih penting.</p>
+          <form class="hero-search" id="hero-search-form" role="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.2 4.2"></path></svg>
+            <label class="sr-only" for="hero-search-input">Cari gedung, area, atau lantai</label>
+            <input id="hero-search-input" type="search" placeholder="Cari gedung, area, lantai..." autocomplete="off">
+            <button type="submit" aria-label="Cari lokasi">Cari <span aria-hidden="true">→</span></button>
+          </form>
+          <div class="popular-searches"><span>Sering dicari</span><button type="button" data-search="Gedung VA">Gedung VA</button><button type="button" data-search="Taman Literasi">Taman Literasi</button></div>
+        </div>
+
+        <div class="hero-visual" aria-label="Ilustrasi peta lokasi colokan di kampus">
+          <div class="visual-orbit orbit-one"></div>
+          <div class="visual-orbit orbit-two"></div>
+          <div class="map-heading"><span class="map-heading-icon">⌖</span><span>AREA VOKASI UI<small>ILUSTRASI AREA</small></span><span class="map-heading-live"><i></i> ILUSTRASI</span></div>
+          <div class="map-doodle" aria-hidden="true">
+            <svg viewBox="0 0 540 440" role="img">
+              <path class="map-road" d="M-25 298C67 252 96 319 193 271s124-24 187-57 103-45 191-22"/>
+              <path class="map-road map-road-small" d="M39 2c34 78 1 102 54 156s59 73 46 159 14 92 65 143"/>
+              <path class="map-road map-road-small" d="M411-13c-7 73 7 110 67 156s55 91 44 131"/>
+              <path class="campus-path" d="M44 226c49-43 92-50 150-40 70 11 82-47 145-50 50-2 89 19 124 56"/>
+              <path class="campus-path path-two" d="M178 225c6 56 50 91 96 99 42 8 62 37 75 78"/>
+              <g class="campus-building building-a"><path d="m109 109 62-23 42 24-62 24z"/><path d="m109 109v62l42 24v-61z"/><path d="m151 134 62-24v62l-62 23z"/><path class="building-window" d="m122 119 27 15m-27-5 27 15m27-10 25-9m-25 20 25-9"/></g>
+              <g class="campus-building building-b"><path d="m288 63 55-20 40 22-55 21z"/><path d="m288 63v60l40 23V86z"/><path d="m328 86 55-21v60l-55 21z"/><path class="building-window" d="m300 75 25 14m-25-4 25 14m24-10 23-8m-23 20 23-8"/></g>
+              <g class="campus-building building-c"><path d="m341 251 55-20 39 22-55 21z"/><path d="m341 251v58l39 23v-58z"/><path d="m380 274 55-21v58l-55 21z"/><path class="building-window" d="m353 263 23 14m-23-4 23 14m24-10 23-8m-23 20 23-8"/></g>
+              <path class="map-green" d="M78 335c15-30 47-43 79-32 19 7 27 29 15 44-21 25-73 19-93-12zm320-199c17-34 51-45 78-31 16 9 16 27 2 41-20 21-62 13-80-10zm-208 132c14-25 42-31 60-16 13 11 9 29-8 39-22 13-47 2-52-23z"/>
+              <g class="map-marker marker-one"><circle r="19"/><path d="M-6-4v6m12-6v6M-9 2h18v2a9 9 0 0 1-7 9v3h-4v-3a9 9 0 0 1-7-9z"/></g>
+              <g class="map-marker marker-two"><circle r="16"/><path d="M-5-3v5m10-5v5M-7 2h14v2a7 7 0 0 1-5 7v3h-4v-3a7 7 0 0 1-5-7z"/></g>
+              <g class="map-marker marker-three"><circle r="14"/><path d="M-4-3v4m8-4v4M-6 1h12v2a6 6 0 0 1-4 6v2h-4V9a6 6 0 0 1-4-6z"/></g>
+            </svg>
+          </div>
+          <div class="map-location-tag tag-a"><span class="tag-dot"></span><strong>Gedung VA</strong><small>Area kampus</small></div>
+          <div class="map-location-tag tag-b"><span class="tag-dot"></span><strong>Gedung VB</strong><small>Area kampus</small></div>
+          <div class="map-location-tag tag-c"><span class="tag-dot"></span><strong>Taman Literasi</strong><small>Area luar</small></div>
+          <div class="map-note"><span class="map-note-spark">✳</span> Ilustrasi area,<br>bukan peta akurat.</div>
+          <div class="map-scale"><span></span> VOKASI UI <span></span></div>
+        </div>
+        <div class="hero-sticker" aria-hidden="true"><span>FOUND<br>YOUR<br>SPOT</span><b>↗</b></div>
+      </section>
+
+      <section class="quick-stats" aria-label="Ringkasan data colokan">
+        <div class="stats-intro"><span class="stats-icon" aria-hidden="true">✳</span> <span>Data kecil,<br>bantuan besar.</span></div>
+        <div class="stat"><strong id="stat-locations">—</strong><span>titik terdata</span></div>
+        <div class="stat"><strong id="stat-buildings">—</strong><span>gedung & area</span></div>
+        <div class="stat"><strong id="stat-working">—</strong><span>titik berfungsi</span></div>
+        <div class="stats-footnote"><span></span> Diperbarui oleh komunitas, diverifikasi admin</div>
+      </section>
+
+      <section class="explorer section-wrap" id="jelajahi" aria-labelledby="explorer-title">
+        <div class="section-heading">
+          <div><div class="eyebrow"><span class="section-number">01</span> DIREKTORI LOKASI</div><h2 id="explorer-title">Cari tempat<br><span>buat isi daya.</span></h2></div>
+          <p>Semua titik colokan yang sudah terdata, dikumpulkan dalam satu tempat. Pilih spot yang paling pas buatmu.</p>
+        </div>
+
+        <div class="directory-toolbar">
+          <label class="directory-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.2 4.2"></path></svg>
+            <span class="sr-only">Cari titik colokan</span>
+            <input id="directory-search-input" type="search" placeholder="Cari gedung, lantai, atau area...">
+            <kbd>⌘ K</kbd>
+          </label>
+          <label class="select-filter"><span class="sr-only">Filter gedung</span><select id="building-filter"><option value="">Semua gedung</option></select><span aria-hidden="true">⌄</span></label>
+          <label class="select-filter"><span class="sr-only">Filter lantai</span><select id="floor-filter"><option value="">Semua lantai</option></select><span aria-hidden="true">⌄</span></label>
+          <label class="select-filter"><span class="sr-only">Filter kategori area</span><select id="category-filter"><option value="">Semua area</option></select><span aria-hidden="true">⌄</span></label>
+          <label class="select-filter"><span class="sr-only">Filter status</span><select id="status-filter"><option value="">Semua status</option></select><span aria-hidden="true">⌄</span></label>
+        </div>
+
+        <div class="results-meta"><span id="results-count">Memuat titik...</span><button id="clear-filters" type="button" class="text-button" data-action="clear-filters" hidden>Hapus filter <span aria-hidden="true">×</span></button></div>
+        <div class="location-grid" id="location-grid" aria-live="polite"></div>
+        <div class="empty-state" id="empty-state" hidden><span>⌕</span><h3>Belum ada titik yang cocok.</h3><p>Coba kata kunci lain atau hapus beberapa filter.</p><button class="button button-outline" id="empty-clear" type="button" data-action="clear-filters">Lihat semua titik</button></div>
+
+        <div class="data-notice"><span class="notice-symbol">i</span><p><strong>Catatan data</strong><br>Status berdasarkan verifikasi terakhir, bukan kondisi colokan secara real-time. Data awal perlu diperiksa langsung di lapangan.</p><a href="#cara-kerja">Cara kerja data <span aria-hidden="true">↗</span></a></div>
+      </section>
+
+      <section class="how-section" id="cara-kerja" aria-labelledby="how-title">
+        <div class="how-grid section-wrap">
+          <div class="how-copy"><div class="eyebrow"><span class="section-number section-number-light">02</span> DARI KITA, UNTUK KITA</div><h2 id="how-title">Bantu kami<br>jaga <span>datanya.</span></h2><p>Menemukan titik yang sudah berubah atau rusak? Kirim laporan singkat. Admin akan mengecek sebelum informasi diperbarui.</p><button class="button button-lime" type="button" data-action="open-report">Kirim laporan <span aria-hidden="true">↗</span></button></div>
+          <div class="steps-list">
+            <article class="step"><span>01</span><div><h3>Temukan titiknya</h3><p>Pilih lokasi dari direktori atau laporkan titik baru.</p></div><b aria-hidden="true">⌕</b></article>
+            <article class="step"><span>02</span><div><h3>Ceritakan kondisinya</h3><p>Isi jenis masalah dan detailnya. Foto boleh ditambahkan.</p></div><b aria-hidden="true">✎</b></article>
+            <article class="step"><span>03</span><div><h3>Admin memverifikasi</h3><p>Laporan diperiksa sebelum menjadi informasi resmi.</p></div><b aria-hidden="true">✓</b></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="bottom-cta section-wrap"><div><span class="eyebrow">MASIH BINGUNG MAU KE MANA?</span><h2>Mulai dari gedungmu.</h2></div><a class="button button-dark" href="#jelajahi">Jelajahi titik <span aria-hidden="true">↓</span></a><span class="cta-doodle" aria-hidden="true">⌁</span></section>
+    </main>
+
+    <section class="admin-view" id="admin-view" aria-label="Dashboard admin" hidden></section>
+
+    <footer class="site-footer"><a class="brand footer-brand" href="#" aria-label="LOKASI beranda"><span class="brand-mark"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M14 9v9m12-9v9M9 18h22v3a11 11 0 0 1-10 11v5h-4v-5A11 11 0 0 1 9 21v-3Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand-name">LOKASI<span class="brand-period">.</span><small>COLOKAN VOKASI</small></span></a><p>Dibuat untuk memudahkan hari-hari di Vokasi UI.</p><span class="footer-note">SEBUAH DIREKTORI KOMUNITAS <span>✳</span> <span id="current-year"></span></span></footer>
+
+    <dialog class="app-dialog" id="detail-dialog" aria-labelledby="detail-dialog-title"><div class="dialog-content" id="detail-dialog-content"></div></dialog>
+    <dialog class="app-dialog report-dialog" id="report-dialog" aria-labelledby="report-dialog-title"><div class="dialog-content" id="report-dialog-content"></div></dialog>
+    <dialog class="app-dialog report-dialog" id="admin-login-dialog" aria-labelledby="admin-login-title"><div class="dialog-content" id="admin-login-content"></div></dialog>
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>
